@@ -134,7 +134,6 @@
         <tr><td>Areal:</td><td>{{matrikel['SpecificParcelAreaMeasure']|thousandSeperator}} m<sup>2</sup></td></tr>
         {%- if matrikel['RoadAreaMeasure'] is defined %}
         <tr><td>Heraf Vej:</td><td>{{matrikel['RoadAreaMeasure']|thousandSeperator}} m<sup>2</sup></td></tr>
-        <tr class="spacer"><td>&nbsp;</td></tr>
       {%- if vars.update({'Areal': vars.Areal + matrikel['SpecificParcelAreaMeasure']|int ,'VejAreal': vars.VejAreal + matrikel['RoadAreaMeasure']|int}) %}{% endif %}
         {%- endif %}
         <tr class="spacer"><td>&nbsp;</td></tr>
