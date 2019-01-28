@@ -132,9 +132,11 @@
         <tr><td>Ejerlav:</td><td>{{matrikel['Matrikel']['CadastralDistrictName']}}</td></tr>
         <tr><td>Matrikelnummer:</td><td>{{matrikel['Matrikel']['Matrikelnummer']|removepad}}</td></tr>
         <tr><td>Areal:</td><td>{{matrikel['SpecificParcelAreaMeasure']|thousandSeperator}} m<sup>2</sup></td></tr>
+        {%- if matrikel['RoadAreaMeasure'] is defined %}
         <tr><td>Heraf Vej:</td><td>{{matrikel['RoadAreaMeasure']|thousandSeperator}} m<sup>2</sup></td></tr>
         <tr class="spacer"><td>&nbsp;</td></tr>
       {%- if vars.update({'Areal': vars.Areal + matrikel['SpecificParcelAreaMeasure']|int ,'VejAreal': vars.VejAreal + matrikel['RoadAreaMeasure']|int}) %}{% endif %}
+        {%- endif %}
       {% endfor %}
       {%- if MatrikelStrukturSamling['MatrikelStruktur']|length > 1 %}
         <tr><td>Samlet areal:</td><td>{{vars.Areal|string|thousandSeperator}} m<sup>2</sup></td></tr>
@@ -147,7 +149,9 @@
       <tr><td>Ejerlav:</td><td>{{matrikel['Matrikel']['CadastralDistrictName']}}</td></tr>
       <tr><td>Matrikelnummer:</td><td>{{matrikel['Matrikel']['Matrikelnummer']|removepad}}</td></tr>
       <tr><td>Areal:</td><td>{{matrikel['SpecificParcelAreaMeasure']|thousandSeperator}} m<sup>2</sup></td></tr>
-      <tr><td>Heraf Vej:</td><td>{{matrikel['RoadAreaMeasure']|thousandSeperator}} m<sup>2</sup></td></tr> 
+      {%- if matrikel['RoadAreaMeasure'] is defined %}
+      <tr><td>Heraf Vej:</td><td>{{matrikel['RoadAreaMeasure']|thousandSeperator}} m<sup>2</sup></td></tr>
+      {%- endif %} 
     {%- endif %}
 
     {%- if EjendomStamoplysninger['HovedNotering'] %}
