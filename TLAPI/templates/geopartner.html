@@ -134,9 +134,9 @@
         <tr><td>Areal:</td><td>{{matrikel['SpecificParcelAreaMeasure']|thousandSeperator}} m<sup>2</sup></td></tr>
         {%- if matrikel['RoadAreaMeasure'] is defined %}
         <tr><td>Heraf Vej:</td><td>{{matrikel['RoadAreaMeasure']|thousandSeperator}} m<sup>2</sup></td></tr>
+        <tr class="spacer"><td>&nbsp;</td></tr>
       {%- if vars.update({'Areal': vars.Areal + matrikel['SpecificParcelAreaMeasure']|int ,'VejAreal': vars.VejAreal + matrikel['RoadAreaMeasure']|int}) %}{% endif %}
         {%- endif %}
-        <tr class="spacer"><td>&nbsp;</td></tr>
       {% endfor %}
       {%- if MatrikelStrukturSamling['MatrikelStruktur']|length > 1 %}
         <tr><td>Samlet areal:</td><td>{{vars.Areal|string|thousandSeperator}} m<sup>2</sup></td></tr>
@@ -157,7 +157,7 @@
     {%- if EjendomStamoplysninger['HovedNotering'] %}
       <tr class="spacer"><td>&nbsp;</td></tr>
       <tr><td class="header">Hovednotering:</td><td>&nbsp;</td></tr>
-      <tr><td>Hovednotering:</td><td>{{EjendomStamoplysninger['HovedNotering']}}</td></tr>
+      <tr><td>Hovednotering:</td><td>{{EjendomStamoplysninger['HovedNotering']|stringprettyfier}}</td></tr>
     {%- endif %}
     
     {%- if EjendomStamoplysninger['Fordelingtal'] %}
@@ -179,7 +179,7 @@
       <table>
         <tr class="spacer"><td>&nbsp;</td></tr>
         <tr><td class="header">Dokument:</td><td>&nbsp;</td></tr>
-        <tr><td>Dokumenttype:</td><td>{{adkomst['AdkomstType']}}</td></tr>
+        <tr><td>Dokumenttype:</td><td>{{adkomst['AdkomstType']|stringprettyfier}}</td></tr>
         {%- if adkomst['DokumentOverfoertIndikator'] == 'true' %}
           <tr><td>Dato/Løbenummer:</td><td>{{adkomst['DokumentAlias']['AktHistoriskIdentifikator']|datolbnr}}</td></tr>
         {%- else %}
@@ -245,7 +245,7 @@
       <table>
         <tr class="spacer"><td>&nbsp;</td></tr>
         <tr><td class="header">Dokument:</td><td>&nbsp;</td></tr>
-        <tr><td>Dokumenttype:</td><td>{{adkomst['AdkomstType']}}</td></tr>
+        <tr><td>Dokumenttype:</td><td>{{adkomst['AdkomstType']|stringprettyfier}}</td></tr>
         {%- if adkomst['DokumentOverfoertIndikator'] == 'true' %}
           <tr><td>Dato/Løbenummer:</td><td>{{adkomst['DokumentAlias']['AktHistoriskIdentifikator']|datolbnr}}</td></tr>
         {%- else %}
@@ -322,7 +322,7 @@
             <tr><td>Dato/Løbenummer:</td><td>{{haeft['DokumentAlias']['AktHistoriskIdentifikator']|datolbnr}}</td></tr>
           {% endif %}
           <tr><td>Prioritet:</td><td>{{haeft['Pantrettighed']['PrioritetNummer']}}</td></tr>
-          <tr><td>Dokumenttype:</td><td>{{haeft['HaeftelseType']}}</td></tr>
+          <tr><td>Dokumenttype:</td><td>{{haeft['HaeftelseType']|stringprettyfier}}</td></tr>
           <tr><td>Hovedstol:</td><td>{{haeft['HaeftelseBeloeb']['BeloebValuta']['BeloebVaerdi']|thousandSeperator}} {{haeft['HaeftelseBeloeb']['BeloebValuta']['ValutaKode']}}</td></tr>
           {% if haeft['HaeftelseRente'] %}
             {% if haeft['HaeftelseRente']['HaeftelseRenteFast'] %}
@@ -332,13 +332,13 @@
             {% endif %}  
           {% endif %}
           {% if haeft['HaeftelseLaantypeKode'] %}
-            <tr><td>Låntype:</td><td>{{haeft['HaeftelseLaantypeKode']}}</td></tr>
+            <tr><td>Låntype:</td><td>{{haeft['HaeftelseLaantypeKode']|stringprettyfier}}</td></tr>
           {% endif %}
           {% if haeft['HaeftelseSaerligeLaanevilkaarstypeSamling'] %}
             {%- if haeft['HaeftelseSaerligeLaanevilkaarstypeSamling']['HaeftelseSaerligeLaanevilkaarstype'] is sequence and haeft['HaeftelseSaerligeLaanevilkaarstypeSamling']['HaeftelseSaerligeLaanevilkaarstype'] is not string and haeft['HaeftelseSaerligeLaanevilkaarstypeSamling']['HaeftelseSaerligeLaanevilkaarstype'] is not mapping %} {# Der er flere lånevilkår #}
-              <tr><td>Særlige lånevilkår:</td><td>{{haeft['HaeftelseSaerligeLaanevilkaarstypeSamling']['HaeftelseSaerligeLaanevilkaarstype']|join('<br>')}}</td></tr>
+              <tr><td>Særlige lånevilkår:</td><td>{{haeft['HaeftelseSaerligeLaanevilkaarstypeSamling']['HaeftelseSaerligeLaanevilkaarstype']|stringprettyfier|join('<br>')}}</td></tr>
             {% else %}
-              <tr><td>Særlige lånevilkår:</td><td>{{haeft['HaeftelseSaerligeLaanevilkaarstypeSamling']['HaeftelseSaerligeLaanevilkaarstype']}}</td></tr>
+              <tr><td>Særlige lånevilkår:</td><td>{{haeft['HaeftelseSaerligeLaanevilkaarstypeSamling']['HaeftelseSaerligeLaanevilkaarstype']|stringprettyfier}}</td></tr>
             {% endif %}
           {% endif %}
           {% if haeft['SenestPaategnetDato'] %}
@@ -496,7 +496,9 @@
               <!-- Flere -->
             {% else %}
               <!-- Enkelt -->
+              {%- if pant['UnderpanthaverInformationSamling']['RolleInformation']['VirksomhedSimpelIdentifikator'] %}
               <tr><td>Underpantshavere:</td><td>{{pant['UnderpanthaverInformationSamling']['RolleInformation']['VirksomhedSimpelIdentifikator']['LegalUnitName']}}<br>{{pant['UnderpanthaverInformationSamling']['RolleInformation']['VirksomhedSimpelIdentifikator']['CVRnumberIdentifier']}}</td></tr>
+              {% endif %}
             {% endif %}
             <tr class="spacer"><td>&nbsp;</td></tr>
           {% endfor %}
@@ -510,7 +512,9 @@
               <!-- Flere -->
             {% else %}
               <!-- Enkelt -->
+              {%- if pant['UnderpanthaverInformationSamling']['RolleInformation']['VirksomhedSimpelIdentifikator'] %}
               <tr><td>Underpantshavere:</td><td>{{pant['UnderpanthaverInformationSamling']['RolleInformation']['VirksomhedSimpelIdentifikator']['LegalUnitName']}}<br>{{pant['UnderpanthaverInformationSamling']['RolleInformation']['VirksomhedSimpelIdentifikator']['CVRnumberIdentifier']}}</td></tr>
+              {% endif %}
             {% endif %}
           {% endif %}
         {%- endif %}
@@ -529,7 +533,7 @@
             <tr><td>Dato/Løbenummer:</td><td>{{haeft['DokumentAlias']['AktHistoriskIdentifikator']|datolbnr}}</td></tr>
           {% endif %}
           <tr><td>Prioritet:</td><td>{{haeft['Pantrettighed']['PrioritetNummer']}}</td></tr>
-          <tr><td>Dokumenttype:</td><td>{{haeft['HaeftelseType']}}</td></tr>
+          <tr><td>Dokumenttype:</td><td>{{haeft['HaeftelseType']|stringprettyfier}}</td></tr>
           <tr><td>Hovedstol:</td><td>{{haeft['HaeftelseBeloeb']['BeloebValuta']['BeloebVaerdi']|thousandSeperator}} {{haeft['HaeftelseBeloeb']['BeloebValuta']['ValutaKode']}}</td></tr>
           {% if haeft['HaeftelseRente'] %}
             {% if haeft['HaeftelseRente']['HaeftelseRenteFast'] %}
@@ -539,7 +543,7 @@
             {% endif %}  
           {% endif %}
           {% if haeft['HaeftelseLaantypeKode'] %}
-            <tr><td>Låntype:</td><td>{{haeft['HaeftelseLaantypeKode']}}</td></tr>
+            <tr><td>Låntype:</td><td>{{haeft['HaeftelseLaantypeKode']|stringprettyfier}}</td></tr>
           {% endif %}
           {% if haeft['HaeftelseSaerligeLaanevilkaarstypeSamling'] %}
             {%- if haeft['HaeftelseSaerligeLaanevilkaarstypeSamling']['HaeftelseSaerligeLaanevilkaarstype'] is sequence and haeft['HaeftelseSaerligeLaanevilkaarstypeSamling']['HaeftelseSaerligeLaanevilkaarstype'] is not string and haeft['HaeftelseSaerligeLaanevilkaarstypeSamling']['HaeftelseSaerligeLaanevilkaarstype'] is not mapping %} {# Der er flere lånevilkår #}
@@ -743,7 +747,7 @@
       <tr><td>Dato/Løbenummer:</td><td>{{servitut['DokumentAlias']['AktHistoriskIdentifikator']|datolbnr}}</td></tr>
     {%- endif %}
     <tr><td>Prioritet:</td><td>{{servitut['Servitutrettighed']['PrioritetNummer']}}</td></tr>
-    <tr><td>Dokumenttype:</td><td>{{servitut['ServitutType']}}{% if servitut['ServitutTekstSummarisk'] %}<br>{{servitut['ServitutTekstSummarisk']}}{% endif %}</td></tr>
+    <tr><td>Dokumenttype:</td><td>{{servitut['ServitutType']|stringprettyfier}}{% if servitut['ServitutTekstSummarisk'] %}<br>{{servitut['ServitutTekstSummarisk']}}{% endif %}</td></tr>
     {%- if servitut['SenestPaategnetDato'] %}
     <tr class="spacer"><td>&nbsp;</td></tr>
       <tr><td class="header">Senest påtegnet:</td><td>&nbsp;</td></tr>
@@ -809,7 +813,7 @@
         <tr><td>Dato/Løbenummer:</td><td>{{servitut['DokumentAlias']['AktHistoriskIdentifikator']|datolbnr}}</td></tr>
       {%- endif %}
       <tr><td>Prioritet:</td><td>{{servitut['Servitutrettighed']['PrioritetNummer']}}</td></tr>
-      <tr><td>Dokumenttype:</td><td>{{servitut['ServitutType']}}{% if servitut['ServitutTekstSummarisk'] %}<br>{{servitut['ServitutTekstSummarisk']}}{% endif %}</td></tr>
+      <tr><td>Dokumenttype:</td><td>{{servitut['ServitutType']|stringprettyfier}}{% if servitut['ServitutTekstSummarisk'] %}<br>{{servitut['ServitutTekstSummarisk']}}{% endif %}</td></tr>
       {%- if servitut['SenestPaategnetDato'] %}
       <tr class="spacer"><td>&nbsp;</td></tr>
         <tr><td class="header">Senest påtegnet:</td><td>&nbsp;</td></tr>
