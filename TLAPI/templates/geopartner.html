@@ -352,15 +352,17 @@
         <table>
         <!-- Flere hæftelser -->
           {% set ns = namespace(erAfgiftPantebrev=false) %}
-          {% set TillaegstekstSamling = haeft['TillaegstekstSamling']['TekstAngivelse'] %}
-          {% if TillaegstekstSamling is sequence and TillaegstekstSamling is not string and TillaegstekstSamling is not mapping %} {# Der er flere tillægstekster #}
-            {% for til in TillaegstekstSamling if til['TekstGruppe']['Overskrift'].startswith('Afgiftpantebrev') %}
-              {% set ns.erAfgiftPantebrev = true %}
-            {% endfor %}
-          {% else %}
-            {% set til = TillaegstekstSamling %}
-            {% if til['TekstGruppe']['Overskrift'].startswith('Afgiftpantebrev') %}
-              {% set ns.erAfgiftPantebrev = true %}
+          {% if haeft['TillaegstekstSamling'] %}
+            {% set TillaegstekstSamling = haeft['TillaegstekstSamling']['TekstAngivelse'] %}
+            {% if TillaegstekstSamling is sequence and TillaegstekstSamling is not string and TillaegstekstSamling is not mapping %} {# Der er flere tillægstekster #}
+              {% for til in TillaegstekstSamling if til['TekstGruppe']['Overskrift'].startswith('Afgiftpantebrev') %}
+                {% set ns.erAfgiftPantebrev = true %}
+              {% endfor %}
+            {% else %}
+              {% set til = TillaegstekstSamling %}
+              {% if til['TekstGruppe']['Overskrift'].startswith('Afgiftpantebrev') %}
+                {% set ns.erAfgiftPantebrev = true %}
+              {% endif %}
             {% endif %}
           {% endif %}
 
@@ -606,17 +608,20 @@
         <!-- Enkelt Hæftelse -->
 
         {% set ns = namespace(erAfgiftPantebrev=false) %}
-        {% set TillaegstekstSamling = haeft['TillaegstekstSamling']['TekstAngivelse'] %}
-        {% if TillaegstekstSamling is sequence and TillaegstekstSamling is not string and TillaegstekstSamling is not mapping %} {# Der er flere tillægstekster #}
-          {% for til in TillaegstekstSamling if til['TekstGruppe']['Overskrift'].startswith('Afgiftpantebrev') %}
-            {% set ns.erAfgiftPantebrev = true %}
-          {% endfor %}
-        {% else %}
-          {% set til = TillaegstekstSamling %}
-          {% if til['TekstGruppe']['Overskrift'].startswith('Afgiftpantebrev') %}
-            {% set ns.erAfgiftPantebrev = true %}
+        {% if haeft['TillaegstekstSamling'] %}
+          {% set TillaegstekstSamling = haeft['TillaegstekstSamling']['TekstAngivelse'] %}
+          {% if TillaegstekstSamling is sequence and TillaegstekstSamling is not string and TillaegstekstSamling is not mapping %} {# Der er flere tillægstekster #}
+            {% for til in TillaegstekstSamling if til['TekstGruppe']['Overskrift'].startswith('Afgiftpantebrev') %}
+              {% set ns.erAfgiftPantebrev = true %}
+            {% endfor %}
+          {% else %}
+            {% set til = TillaegstekstSamling %}
+            {% if til['TekstGruppe']['Overskrift'].startswith('Afgiftpantebrev') %}
+              {% set ns.erAfgiftPantebrev = true %}
+            {% endif %}
           {% endif %}
         {% endif %}
+        
         {% if ns.erAfgiftPantebrev is sameas true %}
           <!-- Er Afgiftpantebrev -->
           <tr class="spacer"><td>&nbsp;</td></tr>
