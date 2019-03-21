@@ -29,7 +29,7 @@
     font-family: sans-serif;
     font-size: 11pt;
   }
-  h1,h2 {
+  h1,h2,h3,h4 {
     text-align: center;
   }
   hr.item-sep {
@@ -129,8 +129,8 @@
       <!-- Flere -->     
       {% for matrikel in MatrikelStrukturSamling['MatrikelStruktur'] %}
         <tr><td>Dato:</td><td>{{matrikel['LandParcelRegistrationDate']|dateonly}}</td></tr>
-        <tr><td>Ejerlav:</td><td>{{matrikel['Matrikel']['CadastralDistrictName']}}</td></tr>
         <tr><td>Matrikelnummer:</td><td>{{matrikel['Matrikel']['Matrikelnummer']|removepad}}</td></tr>
+        <tr><td>Ejerlav:</td><td>{{matrikel['Matrikel']['CadastralDistrictName']}}</td></tr>
         <tr><td>Areal:</td><td>{{matrikel['SpecificParcelAreaMeasure']|thousandSeperator}} m<sup>2</sup></td></tr>
         {%- if matrikel['RoadAreaMeasure'] is defined %}
         <tr><td>Heraf Vej:</td><td>{{matrikel['RoadAreaMeasure']|thousandSeperator}} m<sup>2</sup></td></tr>
@@ -146,28 +146,65 @@
       <!-- Enkelt -->
       {%- set matrikel = MatrikelStrukturSamling['MatrikelStruktur'] %}
       <tr><td>Dato:</td><td>{{matrikel['LandParcelRegistrationDate']|dateonly}}</td></tr>
-      <tr><td>Ejerlav:</td><td>{{matrikel['Matrikel']['CadastralDistrictName']}}</td></tr>
       <tr><td>Matrikelnummer:</td><td>{{matrikel['Matrikel']['Matrikelnummer']|removepad}}</td></tr>
+      <tr><td>Ejerlav:</td><td>{{matrikel['Matrikel']['CadastralDistrictName']}}</td></tr>
       <tr><td>Areal:</td><td>{{matrikel['SpecificParcelAreaMeasure']|thousandSeperator}} m<sup>2</sup></td></tr>
       {%- if matrikel['RoadAreaMeasure'] is defined %}
       <tr><td>Heraf Vej:</td><td>{{matrikel['RoadAreaMeasure']|thousandSeperator}} m<sup>2</sup></td></tr>
       {%- endif %} 
     {%- endif %}
 
+    <!-- Hovedhotering -->
     {%- if EjendomStamoplysninger['HovedNotering'] %}
       <tr class="spacer"><td>&nbsp;</td></tr>
       <tr><td class="header">Hovednotering:</td><td>&nbsp;</td></tr>
       <tr><td>Hovednotering:</td><td>{{EjendomStamoplysninger['HovedNotering']|stringprettyfier}}</td></tr>
     {%- endif %}
+
+    <!-- Noteringer -->
+    {%- if EjendomStamoplysninger['EjendomNoteringTekstSamling'] %}
+      <tr class="spacer"><td>&nbsp;</td></tr>
+      <tr><td class="header">Noteringer:</td><td>&nbsp;</td></tr>
+      {%- if EjendomStamoplysninger['EjendomNoteringTekstSamling']['EjendomNoteringTekst'] is sequence and EjendomStamoplysninger['EjendomNoteringTekstSamling']['EjendomNoteringTekst'] is not string and EjendomStamoplysninger['EjendomNoteringTekstSamling']['EjendomNoteringTekst'] is not mapping %}
+      <!-- Der er flere noteringer-->
+        {% for n in EjendomStamoplysninger['EjendomNoteringTekstSamling']['EjendomNoteringTekst'] %}
+          {% if n['Dato'] %}
+            <tr><td>Dato:</td><td>{{n['Dato']|dateonly}}<br>{{n['Tekst']['TekstGruppe']['Afsnit']|join('')}}</td></tr>
+          {% else %}
+            <tr><td>&nbsp;</td><td>{{n['Tekst']['TekstGruppe']['Afsnit']|join('')}}</td></tr>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+      <!-- Der er en notering-->
+        {% set n = EjendomStamoplysninger['EjendomNoteringTekstSamling']['EjendomNoteringTekst'] %}
+        {% if n['Dato'] %}
+          <tr><td>Dato:</td><td>{{n['Dato']|dateonly}}<br>{{n['Tekst']['TekstGruppe']['Afsnit']|join('')}}</td></tr>
+        {% else %}
+          <tr><td>&nbsp;</td><td>{{n['Tekst']['TekstGruppe']['Afsnit']|join('')}}</td></tr>
+        {% endif %}
+      {% endif %}
+    {%- endif %}
     
+    <!-- Fordelingstal -->
     {%- if EjendomStamoplysninger['Fordelingtal'] %}
       <tr class="spacer"><td>&nbsp;</td></tr>
       <tr><td class="header">Fordelingstal:</td><td>&nbsp;</td></tr>
       <tr><td>Fordeling:</td><td>{{EjendomStamoplysninger['Fordelingtal']['Taeller']}}/{{EjendomStamoplysninger['Fordelingtal']['Naevner']}}</td></tr>
     {%- endif %}
+
     </table>
     <!-- /MatrikelStrukturSamling -->
     
+    <!-- ingen hæftelser-->
+    {%- if not EjendomSummarisk['HaeftelseSummariskSamling'] is defined %}
+      <h4>Der findes ingen hæftelser på ejendommen</h4>
+    {% endif %}
+
+    <!-- ingen servitutter-->
+    {%- if not EjendomSummarisk['ServitutSummariskSamling'] is defined %}
+      <h4>Der findes ingen servitutter på ejendommen</h4>
+    {% endif %}
+
     <!-- AdkomstSummariskSamling -->
     {%- if EjendomSummarisk['AdkomstSummariskSamling'] is defined %}
     <hr>
@@ -215,7 +252,7 @@
           {%- endif %}
           {%- if adkomst['AdkomsthaverSamling']['Adkomsthaver']['CVRnumberIdentifier'] is defined %}
             <!-- Er Firma -->
-            <tr><td>Navn:</td><td>{{adkomst['AdkomsthaverSamling']['Adkomsthaver']['CVRnumberIdentifier']['LegalUnitName']}}</td></tr>
+            <tr><td>Navn:</td><td>{{adkomst['AdkomsthaverSamling']['Adkomsthaver']['LegalUnitName']}}</td></tr>
             {%- if adkomst['AdkomsthaverSamling']['Adkomsthaver']['CVRnumberIdentifier'] is defined %}
             <tr><td>Cvr-nr.:</td><td>{{adkomst['AdkomsthaverSamling']['Adkomsthaver']['CVRnumberIdentifier']}}</td></tr>
             {%- endif %}
@@ -281,7 +318,7 @@
           {%- endif %}
           {%- if adkomst['AdkomsthaverSamling']['Adkomsthaver']['CVRnumberIdentifier'] is defined %}
             <!-- Er Firma -->
-            <tr><td>Navn:</td><td>{{adkomst['AdkomsthaverSamling']['Adkomsthaver']['CVRnumberIdentifier']['LegalUnitName']}}</td></tr>
+            <tr><td>Navn:</td><td>{{adkomst['AdkomsthaverSamling']['Adkomsthaver']['LegalUnitName']}}</td></tr>
             {%- if adkomst['AdkomsthaverSamling']['Adkomsthaver']['CVRnumberIdentifier'] is defined %}
             <tr><td>Cvr-nr.:</td><td>{{adkomst['AdkomsthaverSamling']['Adkomsthaver']['CVRnumberIdentifier']}}</td></tr>
             {%- endif %}
@@ -314,7 +351,38 @@
         {% for haeft in HaeftelseSummariskSamling %}
         <table>
         <!-- Flere hæftelser -->
-          <tr class="spacer"><td>&nbsp;</td></tr>
+          {% set ns = namespace(erAfgiftPantebrev=false) %}
+          {% set TillaegstekstSamling = haeft['TillaegstekstSamling']['TekstAngivelse'] %}
+          {% if TillaegstekstSamling is sequence and TillaegstekstSamling is not string and TillaegstekstSamling is not mapping %} {# Der er flere tillægstekster #}
+            {% for til in TillaegstekstSamling if til['TekstGruppe']['Overskrift'].startswith('Afgiftpantebrev') %}
+              {% set ns.erAfgiftPantebrev = true %}
+            {% endfor %}
+          {% else %}
+            {% set til = TillaegstekstSamling %}
+            {% if til['TekstGruppe']['Overskrift'].startswith('Afgiftpantebrev') %}
+              {% set ns.erAfgiftPantebrev = true %}
+            {% endif %}
+          {% endif %}
+
+          {% if ns.erAfgiftPantebrev is sameas true %}
+            <!-- Er Afgiftpantebrev -->
+            <tr class="spacer"><td>&nbsp;</td></tr>
+            <tr><td class="header">Afgiftpantebrev:</td><td>&nbsp;</td></tr>
+            {% if haeft['DokumentOverfoertIndikator'] == 'false' %}
+              <tr><td>Dato/Løbenummer:</td><td>{{haeft['DokumentAlias']['DokumentAliasIdentifikator']|datolbnr}}</td></tr>
+            {% else %}
+              <tr><td>Dato/Løbenummer:</td><td>{{haeft['DokumentAlias']['AktHistoriskIdentifikator']|datolbnr}}</td></tr>
+            {% endif %}
+            <tr><td>Prioritet:</td><td>{{haeft['Pantrettighed']['PrioritetNummer']}}</td></tr>
+            <tr><td>Hovedstol:</td><td>{{haeft['HaeftelseBeloeb']['BeloebValuta']['BeloebVaerdi']|thousandSeperator}} {{haeft['HaeftelseBeloeb']['BeloebValuta']['ValutaKode']}}</td></tr>
+        </table>
+      <hr class="item-sep">
+          {% else %}
+            <!-- Er Hæftelse -->
+
+
+
+<tr class="spacer"><td>&nbsp;</td></tr>
           <tr><td class="header">Dokument:</td><td>&nbsp;</td></tr>
           {% if haeft['DokumentOverfoertIndikator'] == 'false' %}
             <tr><td>Dato/Løbenummer:</td><td>{{haeft['DokumentAlias']['DokumentAliasIdentifikator']|datolbnr}}</td></tr>
@@ -353,6 +421,7 @@
           {% endif %}
 
           {# Kreditorer #}
+          <!-- Kreditorer -->
           {%- if haeft['KreditorInformationSamling'] %}
             <tr class="spacer"><td>&nbsp;</td></tr>
             <tr><td class="header">Kreditorer:</td><td>&nbsp;</td></tr>
@@ -360,11 +429,13 @@
             {%- if Kreditor is sequence and Kreditor is not string and Kreditor is not mapping %} {# Der er flere kreditorer #}
               {%- for k in Kreditor %}
                 {%- if k['PersonSimpelIdentifikator'] %}
+                <!-- Personer -->
                   <tr><td>Navn:</td><td>{{k['PersonSimpelIdentifikator']['PersonName']}}</td></tr>
                   {%- if k['PersonSimpelIdentifikator']['BirthDate'] is defined %}
                   <tr><td>Cpr-nr.:</td><td>{{k['PersonSimpelIdentifikator']['BirthDate']|cpr}}</td></tr>
                   {%- endif %}
                 {%- else %}
+                <!-- Virksomheder -->
                   <tr><td>Navn:</td><td>{{k['VirksomhedSimpelIdentifikator']['LegalUnitName']}}</td></tr>
                   {%- if k['VirksomhedSimpelIdentifikator']['CVRnumberIdentifier'] is defined %}
                   <tr><td>Cvr-nr::</td><td>{{k['VirksomhedSimpelIdentifikator']['CVRnumberIdentifier']}}</td></tr>
@@ -374,16 +445,19 @@
               {%- endfor %}
             {%- else %}{# Der er kun 1#}
               {%- if Kreditor['PersonSimpelIdentifikator'] %}
+              <!-- Person -->
                 <tr><td>Navn:</td><td>{{Kreditor['PersonSimpelIdentifikator']['PersonName']}}</td></tr>
                 {%- if Kreditor['PersonSimpelIdentifikator']['BirthDate'] is defined %}
                 <tr><td>Cpr-nr.:</td><td>{{Kreditor['PersonSimpelIdentifikator']['BirthDate']|cpr}}</td></tr>
                 {%- endif %}
               {%- else %}
+              <!-- Virksomhed -->
                 <tr><td>Navn:</td><td>{{Kreditor['VirksomhedSimpelIdentifikator']['LegalUnitName']}}</td></tr>
                 {%- if Kreditor['VirksomhedSimpelIdentifikator']['CVRnumberIdentifier'] is defined %}
                 <tr><td>Cvr-nr::</td><td>{{Kreditor['VirksomhedSimpelIdentifikator']['CVRnumberIdentifier']}}</td></tr>
                 {%- endif %}
               {%- endif %}
+              <tr class="spacer"><td>&nbsp;</td></tr>
             {%- endif %}
           {%- endif %}
 
@@ -469,7 +543,7 @@
         {%- if haeft['TillaegstekstSamling'] %}
           <tr><td class="header">Tillægstekst:</td><td>&nbsp;</td></tr>
           {% set TillaegstekstSamling = haeft['TillaegstekstSamling']['TekstAngivelse'] %}
-          {%- if TillaegstekstSamling is sequence and TillaegstekstSamling is not string and TillaegstekstSamling is not mapping %} {# Der er flere påtaleberettiget #}
+          {%- if TillaegstekstSamling is sequence and TillaegstekstSamling is not string and TillaegstekstSamling is not mapping %} {# Der er flere tillægstekster #}
           {% for til in TillaegstekstSamling %}
           <tr><td>&nbsp;</td><td>{% if til['TekstGruppe']['Overskrift']%}{{til['TekstGruppe']['Overskrift']}}<br>{% endif %}{{til['TekstGruppe']['Afsnit']|join('')}}</td>
           <tr class="spacer"><td>&nbsp;</td></tr>
@@ -503,7 +577,7 @@
             <tr class="spacer"><td>&nbsp;</td></tr>
           {% endfor %}
           {% else %}
-          <!-- Enkelt -->
+          <!-- Enkelt Hæftelse -->
           {% set pant = UnderpantrettighedSamling %}
             <tr><td>Dato/løbenummer:</td><td>{{pant['DokumentAlias']['DokumentAliasIdentifikator']|datolbnr}}</td></tr>
             <tr><td>Prioritet:</td><td>{{pant['PrioritetNummer']}}</td></tr>
@@ -516,15 +590,48 @@
               <tr><td>Underpantshavere:</td><td>{{pant['UnderpanthaverInformationSamling']['RolleInformation']['VirksomhedSimpelIdentifikator']['LegalUnitName']}}<br>{{pant['UnderpanthaverInformationSamling']['RolleInformation']['VirksomhedSimpelIdentifikator']['CVRnumberIdentifier']}}</td></tr>
               {% endif %}
             {% endif %}
-          {% endif %}
         {%- endif %}
-        </table>
-        <hr class="item-sep">
+
+          {% endif%}
+
+      </table>
+      <hr class="item-sep">
+        {% endif %}
+
+
         {% endfor %}
       {%- else %} {# Der er kun 1 hæftelse #}
       {% set haeft = HaeftelseSummariskSamling %}
         <table>
         <!-- Enkelt Hæftelse -->
+
+        {% set ns = namespace(erAfgiftPantebrev=false) %}
+        {% set TillaegstekstSamling = haeft['TillaegstekstSamling']['TekstAngivelse'] %}
+        {% if TillaegstekstSamling is sequence and TillaegstekstSamling is not string and TillaegstekstSamling is not mapping %} {# Der er flere tillægstekster #}
+          {% for til in TillaegstekstSamling if til['TekstGruppe']['Overskrift'].startswith('Afgiftpantebrev') %}
+            {% set ns.erAfgiftPantebrev = true %}
+          {% endfor %}
+        {% else %}
+          {% set til = TillaegstekstSamling %}
+          {% if til['TekstGruppe']['Overskrift'].startswith('Afgiftpantebrev') %}
+            {% set ns.erAfgiftPantebrev = true %}
+          {% endif %}
+        {% endif %}
+        {% if ns.erAfgiftPantebrev is sameas true %}
+          <!-- Er Afgiftpantebrev -->
+          <tr class="spacer"><td>&nbsp;</td></tr>
+          <tr><td class="header">Afgiftpantebrev:</td><td>&nbsp;</td></tr>
+          {% if haeft['DokumentOverfoertIndikator'] == 'false' %}
+            <tr><td>Dato/Løbenummer:</td><td>{{haeft['DokumentAlias']['DokumentAliasIdentifikator']|datolbnr}}</td></tr>
+          {% else %}
+            <tr><td>Dato/Løbenummer:</td><td>{{haeft['DokumentAlias']['AktHistoriskIdentifikator']|datolbnr}}</td></tr>
+          {% endif %}
+          <tr><td>Prioritet:</td><td>{{haeft['Pantrettighed']['PrioritetNummer']}}</td></tr>
+          <tr><td>Hovedstol:</td><td>{{haeft['HaeftelseBeloeb']['BeloebValuta']['BeloebVaerdi']|thousandSeperator}} {{haeft['HaeftelseBeloeb']['BeloebValuta']['ValutaKode']}}</td></tr>
+        </table>
+        <hr class="item-sep">
+          {% else %}
+
           <tr class="spacer"><td>&nbsp;</td></tr>
           <tr><td class="header">Dokument:</td><td>&nbsp;</td></tr>
           {% if haeft['DokumentOverfoertIndikator'] == 'false' %}
@@ -681,12 +788,13 @@
           <tr><td class="header">Tillægstekst:</td><td>&nbsp;</td></tr>
           {% set TillaegstekstSamling = haeft['TillaegstekstSamling']['TekstAngivelse'] %}
           {%- if TillaegstekstSamling is sequence and TillaegstekstSamling is not string and TillaegstekstSamling is not mapping %} {# Der er flere påtaleberettiget #}
+          <!-- Flere TillaegstekstSamling-->
           {% for til in TillaegstekstSamling %}
           <tr><td>&nbsp;</td><td>{% if til['TekstGruppe']['Overskrift']%}{{til['TekstGruppe']['Overskrift']}}<br>{% endif %}{{til['TekstGruppe']['Afsnit']|join('')}}</td>
           <tr class="spacer"><td>&nbsp;</td></tr>
           {%- endfor %}
           {%- else%}
-          <!-- enkelt -->
+          <!-- enkelt TillaegstekstSamling-->
           {% set til = TillaegstekstSamling %}
           <tr><td>&nbsp;</td><td>{% if til['TekstGruppe']['Overskrift']%}{{til['TekstGruppe']['Overskrift']}}<br>{% endif %}{{til['TekstGruppe']['Afsnit']|join('')}}</td>
           {%- endif %}
@@ -697,35 +805,61 @@
         {%- set UnderpantrettighedSamling = haeft['UnderpantrettighedSamling']['Underpantrettighed'] %}
         <tr><td class="header">Underpant:</td><td>&nbsp;</td></tr>
           {%- if UnderpantrettighedSamling is sequence and UnderpantrettighedSamling is not string and UnderpantrettighedSamling is not mapping %} {# Der er flere Underpandrettigheder #}
-          <!-- Flere -->
+          <!-- Flere i UnderpantrettighedSamling-->
           {% for pant in UnderpantrettighedSamling %}
             
             <tr><td>Dato/løbenummer:</td><td>{{pant['DokumentAlias']['DokumentAliasIdentifikator']|datolbnr}}</td></tr>
             <tr><td>Prioritet:</td><td>{{pant['PrioritetNummer']}}</td></tr>
             <tr><td>Underpantsbeløb:</td><td>{{pant['UnderpantBeloeb']['BeloebVaerdi']|thousandSeperator}} {{pant['UnderpantBeloeb']['ValutaKode']}}</td></tr>
             {%- if pant['UnderpanthaverInformationSamling'] is sequence and pant['UnderpanthaverInformationSamling'] is not string and pant['UnderpanthaverInformationSamling'] is not mapping %} {# Der er flere havere #}
-              <!-- Flere -->
+              <!-- Flere i UnderpanthaverInformationSamling-->
             {% else %}
-              <!-- Enkelt -->
+              <!-- Enkelt i UnderpanthaverInformationSamling-->
               <tr><td>Underpantshavere:</td><td>{{pant['UnderpanthaverInformationSamling']['RolleInformation']['VirksomhedSimpelIdentifikator']['LegalUnitName']}}<br>{{pant['UnderpanthaverInformationSamling']['RolleInformation']['VirksomhedSimpelIdentifikator']['CVRnumberIdentifier']}}</td></tr>
             {% endif %}
             <tr class="spacer"><td>&nbsp;</td></tr>
           {% endfor %}
           {% else %}
-          <!-- Enkelt -->
+          <!-- Enkelt i UnderpantrettighedSamling-->
           {% set pant = UnderpantrettighedSamling %}
             <tr><td>Dato/løbenummer:</td><td>{{pant['DokumentAlias']['DokumentAliasIdentifikator']|datolbnr}}</td></tr>
             <tr><td>Prioritet:</td><td>{{pant['PrioritetNummer']}}</td></tr>
             <tr><td>Underpantsbeløb:</td><td>{{pant['UnderpantBeloeb']['BeloebVaerdi']|thousandSeperator}} {{pant['UnderpantBeloeb']['ValutaKode']}}</td></tr>
-            {%- if pant['UnderpanthaverInformationSamling'] is sequence and pant['UnderpanthaverInformationSamling'] is not string and pant['UnderpanthaverInformationSamling'] is not mapping %} {# Der er flere havere #}
-              <!-- Flere -->
+            {%- if pant['UnderpanthaverInformationSamling']['RolleInformation'] is sequence and pant['UnderpanthaverInformationSamling']['RolleInformation'] is not string and pant['UnderpanthaverInformationSamling']['RolleInformation'] is not mapping %} {# Der er flere havere #}
+              <!-- Flere i UnderpanthaverInformationSamling-->
+              <tr><td class="header">Underpantshavere:</td><td>&nbsp;</td></tr>
+              {% for p in pant['UnderpanthaverInformationSamling']['RolleInformation'] %}
+                {% if p['VirksomhedSimpelIdentifikator'] %}
+                  <!-- Virksomhed -->
+                  <tr><td>Navn:</td><td>{{p['VirksomhedSimpelIdentifikator']['LegalUnitName']}}</td></tr>
+                  <tr><td>Cvr-nr:</td><td>{{p['VirksomhedSimpelIdentifikator']['CVRnumberIdentifier']}}</td></tr>
+                  {% else %}
+                  <!-- Person -->
+                  <tr><td>Navn:</td><td>{{p['PersonSimpelIdentifikator']['PersonName']}}</tr></td>
+                  <tr><td>Fødselsdato:</td><td>{{p['PersonSimpelIdentifikator']['BirthDate']}}</td></tr>
+                {% endif %}
+                <tr class="spacer"><td>&nbsp;</td></tr>
+              {% endfor %}
             {% else %}
-              <!-- Enkelt -->
-              <tr><td>Underpantshavere:</td><td>{{pant['UnderpanthaverInformationSamling']['RolleInformation']['VirksomhedSimpelIdentifikator']['LegalUnitName']}}<br>{{pant['UnderpanthaverInformationSamling']['RolleInformation']['VirksomhedSimpelIdentifikator']['CVRnumberIdentifier']}}</td></tr>
+              <!-- Enkelt i UnderpanthaverInformationSamling-->
+              {% set p = pant['UnderpanthaverInformationSamling']['RolleInformation'] %}
+              {% if p['VirksomhedSimpelIdentifikator'] %}
+                <!-- Virksomhed -->
+                <tr><td>Underpantshaver:</td><td>{{p['VirksomhedSimpelIdentifikator']['LegalUnitName']}}<br>{{p['VirksomhedSimpelIdentifikator']['CVRnumberIdentifier']}}</td></tr>
+              {% else %}
+                <!-- Person -->
+                <tr><td>Underpantshaver:</td><td>{{p['PersonSimpelIdentifikator']['PersonName']}}<br>{{p['PersonSimpelIdentifikator']['BirthDate']}}</td></tr>
+              {% endif %}
             {% endif %}
           {% endif %}
         {%- endif %}
         </table>
+
+
+        {% endif %}
+
+
+        
       {%- endif %}
     {%- endif %}
     <!-- HaeftelseSummarisk -->
@@ -736,7 +870,7 @@
     <h2>Servitutter</h2>
     {%- set ServitutSummarisk = EjendomSummarisk['ServitutSummariskSamling']['ServitutSummarisk'] %}
     {%- if ServitutSummarisk is sequence and ServitutSummarisk is not string and ServitutSummarisk is not mapping %} {# Der er flere servitutter #}
-    <!-- Flere -->
+    <!-- Flere Servitutter -->
     {%- for servitut in ServitutSummarisk %}
     <table>
     <tr class="spacer"><td>&nbsp;</td></tr>
@@ -758,11 +892,11 @@
       <tr><td class="header">Også lyst på:</td><td>&nbsp;</td></tr>
       <tr><td>Antal:</td><td>{{servitut['OgsaaLystPaaSamling']['OgsaaLystPaaAntal']}}</td></tr>
     {%- endif %}
-    {#- Supl. information#}
+    {#- Supl. information #}
     {%- if servitut['ServitutInformation']['ServitutAfsnitLedninger'] %}
     <tr class="spacer"><td>&nbsp;</td></tr>
       <tr><td class="header">Ledninger:</td><td>&nbsp;</td></tr>
-      <tr><td>&nbsp;</td>{{servitut['ServitutInformation']['ServitutAfsnitLedninger']['ServitutIndholdLedninger']['ServitutIndholdLedningerKode']}}</td></tr>
+      <tr><td>&nbsp;</td><td></td>{{servitut['ServitutInformation']['ServitutAfsnitLedninger']['ServitutIndholdLedninger']['ServitutIndholdLedningerKode']}}</td></tr>
     {%- endif %}
     {%- if servitut['DokumentInformationOverfoert'] %}
       <tr><td>Akt nr:</td><td>{{servitut['DokumentInformationOverfoert']['DokumentFilnavnTekst']}}</td></tr>
@@ -789,20 +923,20 @@
     <tr class="spacer"><td>&nbsp;</td></tr>
       <tr><td class="header">Tillægstekst:</td><td>&nbsp;</td></tr>
       {%- if servitut['TillaegstekstSamling']['TekstAngivelse'] is sequence and servitut['TillaegstekstSamling']['TekstAngivelse'] is not string and servitut['TillaegstekstSamling']['TekstAngivelse'] is not mapping %} {# Der er flere påtaleberettiget #}
-      {% for til in servitut['TillaegstekstSamling']['TekstAngivelse'] %}
-      <tr><td>&nbsp;</td><td>{% if til['TekstGruppe']['Overskrift']%}{{til['TekstGruppe']['Overskrift']}}<br>{% endif %}{{til['TekstGruppe']['Afsnit']|join('')}}</td>
-      <tr class="spacer"><td>&nbsp;</td></tr>
-      {%- endfor %}
-      {%- else%}
-      <!-- enkelt -->
-      <tr><td>&nbsp;</td><td>{% if servitut['TillaegstekstSamling']['TekstAngivelse']['TekstGruppe']['Overskrift']%}{{servitut['TillaegstekstSamling']['TekstAngivelse']['TekstGruppe']['Overskrift']}}<br>{% endif %}{{servitut['TillaegstekstSamling']['TekstAngivelse']['TekstGruppe']['Afsnit']|join('')}}</td></tr>
+        <!-- flere tillægstekster -->
+        {% for til in servitut['TillaegstekstSamling']['TekstAngivelse'] %}
+        <tr><td>&nbsp;</td><td>{% if til['TekstGruppe']['Overskrift']%}{{til['TekstGruppe']['Overskrift']}}<br>{% endif %}{{til['TekstGruppe']['Afsnit']|join('')}}</td>
+        <tr class="spacer"><td>&nbsp;</td></tr>
+        {%- endfor %}
+      {%- else %}
+          <!-- enkelt tillægstekst -->
+          <tr><td>&nbsp;</td><td>{% if servitut['TillaegstekstSamling']['TekstAngivelse']['TekstGruppe']['Overskrift']%}{{servitut['TillaegstekstSamling']['TekstAngivelse']['TekstGruppe']['Overskrift']}}<br>{% endif %}{{servitut['TillaegstekstSamling']['TekstAngivelse']['TekstGruppe']['Afsnit']|join('')}}</td></tr>{%- endif %}
       {%- endif %}
-    {%- endif %}
     </table>
     <hr class='item-sep'>
     {% endfor %}
     {%- else %}
-      <!-- Enkelt -->
+      <!-- Enkelt Servitut -->
       {%- set servitut = ServitutSummarisk %}
       <table>
       <tr class="spacer"><td>&nbsp;</td></tr>
