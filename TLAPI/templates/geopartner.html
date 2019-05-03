@@ -228,14 +228,27 @@
         {%- if adkomst['AdkomsthaverSamling']['Adkomsthaver'] is sequence and adkomst['AdkomsthaverSamling']['Adkomsthaver'] is not string and adkomst['AdkomsthaverSamling']['Adkomsthaver'] is not mapping %} {# Der er flere adkomsthavere #}
         <!-- Flere -->
         {% for a in adkomst['AdkomsthaverSamling']['Adkomsthaver'] %}
-          <tr><td>Navn:</td><td>{{a['PersonSimpelIdentifikator']['PersonName']}}</td></tr>
-          {%- if a['PersonSimpelIdentifikator']['BirthDate'] is defined %}
-          <tr><td>Cpr-nr.:</td><td>{{a['PersonSimpelIdentifikator']['BirthDate']|cpr}}</td></tr>
+          {%- if a['PersonSimpelIdentifikator'] is defined %}
+            <!-- Er privat -->
+              <tr><td>Navn:</td><td>{{a['PersonSimpelIdentifikator']['PersonName']}}</td></tr>
+            {%- if a['PersonSimpelIdentifikator']['BirthDate'] is defined %}
+              <tr><td>Cpr-nr.:</td><td>{{a['PersonSimpelIdentifikator']['BirthDate']|cpr}}</td></tr>
+            {%- endif %}
+            {%- if a['AndelIdeel']['Taeller'] is defined and a['AndelIdeel']['Naevner'] is defined %}
+              <tr><td>Ejerandel:</td><td>{{a['AndelIdeel']['Taeller']}}/{{a['AndelIdeel']['Naevner']}}</td></tr>
+            {%- endif %}
+              <tr class="spacer"><td>&nbsp;</td></tr>
           {%- endif %}
-          {%- if a['AndelIdeel']['Taeller'] is defined and a['AndelIdeel']['Naevner'] is defined %}
-          <tr><td>Ejerandel:</td><td>{{a['AndelIdeel']['Taeller']}}/{{a['AndelIdeel']['Naevner']}}</td></tr>
+          {%- if a['CVRnumberIdentifier'] is defined %}
+            <!-- Er Firma -->
+              <tr><td>Navn:</td><td>{{a['LegalUnitName']}}</td></tr>
+            {%- if a['CVRnumberIdentifier'] is defined %}
+              <tr><td>Cvr-nr.:</td><td>{{a['CVRnumberIdentifier']}}</td></tr>
+            {%- endif %}
+            {%- if a['AndelIdeel']['Taeller'] is defined and a['AndelIdeel']['Naevner'] is defined %}
+              <tr><td>Ejerandel:</td><td>{{a['AndelIdeel']['Taeller']}}/{{a['AndelIdeel']['Naevner']}}</td></tr>
+            {%- endif %}
           {%- endif %}
-          <tr class="spacer"><td>&nbsp;</td></tr>
         {%- endfor %}
 
         {%- else %} {# Der er kun 1 adkomsthaver #}
