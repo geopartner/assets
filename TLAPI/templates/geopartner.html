@@ -237,7 +237,6 @@
             {%- if a['AndelIdeel']['Taeller'] is defined and a['AndelIdeel']['Naevner'] is defined %}
               <tr><td>Ejerandel:</td><td>{{a['AndelIdeel']['Taeller']}}/{{a['AndelIdeel']['Naevner']}}</td></tr>
             {%- endif %}
-              <tr class="spacer"><td>&nbsp;</td></tr>
           {%- endif %}
           {%- if a['CVRnumberIdentifier'] is defined %}
             <!-- Er Firma -->
@@ -249,6 +248,7 @@
               <tr><td>Ejerandel:</td><td>{{a['AndelIdeel']['Taeller']}}/{{a['AndelIdeel']['Naevner']}}</td></tr>
             {%- endif %}
           {%- endif %}
+        <tr class="spacer"><td>&nbsp;</td></tr>
         {%- endfor %}
 
         {%- else %} {# Der er kun 1 adkomsthaver #}
