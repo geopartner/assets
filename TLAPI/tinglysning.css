@@ -1,0 +1,118 @@
+@CHARSET "UTF-8";
+
+@page {
+  @bottom-right { font-family: sans-serif; font-size: 10pt; color: grey; content: "Side " counter(page) " af " counter(pages); }
+}
+
+#dato{
+  position: running(dato);
+}
+
+#pagenumber:before {
+content: counter(page); 
+}
+
+#pagecount:before {
+content: counter(pages);  
+}
+
+body {
+  font-family: sans-serif;
+  font-size: 12pt;
+}
+h1.title {
+  text-align: center;
+  padding-right:4em;
+  padding-left:4em;
+}
+h2.adskiller {
+  text-align: left;
+  font-style: italic;
+  color: grey;
+}
+.subheader {
+  text-align: center;
+}
+h4.header {
+  margin-top: 0.25ex;
+  margin-bottom: 0.25ex;
+  color: grey;
+  width: 14em;
+}
+hr.heading {
+	text-align:left;
+	margin-left:0;
+	width: 14em;
+	background: none;
+	border: dashed #808080;
+	border-width: 1px 0 0 0;
+}
+hr.long {
+	border-width: 1px 0 0 0;
+}
+hr.long_dashed {
+	text-align:left;
+	margin-left:0;
+	background: none;
+	border: dashed #808080;
+	border-width: 1px 0 0 0;
+}
+img.logo {
+	position: absolute;
+    z-index: -1;
+    top: 0px;
+    right: 0px;
+    width: 8em;
+	 }
+dl {
+  margin: 0 0 0 0;
+  overflow: hidden;
+}
+dt {
+    float: left;
+    clear: left;
+    width: 14em;
+}
+dd {
+    margin: 0 0 0 15em;
+}
+table, tbody, tr, td {
+  border: none;
+  margin: 0;
+  padding: 0;  
+}
+table {
+  width: 100%;
+  border-spacing: 0; 
+  border-collapse: collapse;
+  table-layout:fixed;
+}
+td.left {
+  width: 14em;
+  vertical-align: top;
+}
+td.right {
+  padding-left: 1em;
+  vertical-align: bottom;
+  word-wrap: break-word;
+}
+td.left_sub {
+  padding-left:1.5em;
+  margin-left: 1.5em;
+  vertical-align: top;
+  width: 12.5em;
+}
+div.column2 {
+    margin-left: 15em;
+}
+.two_columns_sub{
+  margin-left: 1.5em;
+  width: 12em;
+}
+.proevetinglysning {
+	  text-align: center;
+	  margin-bottom: 2em;
+}
+.linefeed {
+  clear:both;
+}
