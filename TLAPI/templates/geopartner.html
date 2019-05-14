@@ -119,8 +119,30 @@
       <tr><td>Adresse:</td><td>{{AdresseStruktur['StreetName']}} {{AdresseStruktur['AddressSpecific']['AddressAccess']['StreetBuildingIdentifier']}}<br>{{AdresseStruktur['PostCodeIdentifier']}} {{AdresseStruktur['DistrictName']}}</td></tr>
     {% endif %}
     <tr class="spacer"><td>&nbsp;</td></tr>
+
     {%- if EjendomStamoplysninger['EjendomIdentifikator'] is defined %}
     <tr><td>BFE-nummer:</td><td>{{EjendomStamoplysninger['EjendomIdentifikator']['BestemtFastEjendomNummer']}}</td></tr>
+    <tr class="spacer"><td>&nbsp;</td></tr>
+    {% endif %}
+
+    {%- if EjendomStamoplysninger['EjendomIdentifikator']['EjendomType']['Ejerlejlighed'] is defined %}
+    <!-- Ejerlejlighed, nummer-->
+    <tr><td>Ejendomstype:</td><td>Ejerlejlighed</td></tr>
+    <tr><td>Nummer:</td><td>{{EjendomStamoplysninger['EjendomIdentifikator']['EjendomType']['Ejerlejlighed']['Ejerlejlighedsnummer']}}</td></tr>
+    {% endif %}
+
+    {%- if EjendomStamoplysninger['TillaegstekstSamling']['TekstAngivelse'] is sequence and EjendomStamoplysninger['TillaegstekstSamling']['TekstAngivelse'] is not string and EjendomStamoplysninger['TillaegstekstSamling']['TekstAngivelse'] is not mapping %}
+    <!-- Ejerlejlighed, areal og dato-->
+      {% for n in EjendomStamoplysninger['TillaegstekstSamling']['TekstAngivelse'] %}
+        {% if n['TekstGruppe']['Overskrift'] == 'Ejerlejlighedens dato' %}
+          <tr><td>Ejerlejlighedens dato:</td><td>{{n['TekstGruppe']['Afsnit']|dateonly}}</td></tr>
+        {% endif %}
+        {% if n['TekstGruppe']['Overskrift'] == 'Ejerlejlighedens tinglyste areal' %}
+        <tr><td>Ejerlejlighedens areal:</td><td>{{n['TekstGruppe']['Afsnit']}}</td></tr>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <!-- wat -->
     {% endif %}
 
     <tr class="spacer"><td>&nbsp;</td></tr>
@@ -237,6 +259,7 @@
             {%- if a['AndelIdeel']['Taeller'] is defined and a['AndelIdeel']['Naevner'] is defined %}
               <tr><td>Ejerandel:</td><td>{{a['AndelIdeel']['Taeller']}}/{{a['AndelIdeel']['Naevner']}}</td></tr>
             {%- endif %}
+              <tr class="spacer"><td>&nbsp;</td></tr>
           {%- endif %}
           {%- if a['CVRnumberIdentifier'] is defined %}
             <!-- Er Firma -->
@@ -248,7 +271,6 @@
               <tr><td>Ejerandel:</td><td>{{a['AndelIdeel']['Taeller']}}/{{a['AndelIdeel']['Naevner']}}</td></tr>
             {%- endif %}
           {%- endif %}
-        <tr class="spacer"><td>&nbsp;</td></tr>
         {%- endfor %}
 
         {%- else %} {# Der er kun 1 adkomsthaver #}
