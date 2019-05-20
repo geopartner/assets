@@ -327,6 +327,24 @@
           <tr><td>&nbsp;</td><td>{{adkomst['SkoedeOvertagelsesDato']|dateonly}}</td></tr>
           {% endif %}
         {% endif %}
+
+        {%- if adkomst['TillaegstekstSamling'] %}
+        <tr><td class="header">Tillægstekst:</td><td>&nbsp;</td></tr>
+        {% set TillaegstekstSamling = adkomst['TillaegstekstSamling']['TekstAngivelse'] %}
+        {%- if TillaegstekstSamling is sequence and TillaegstekstSamling is not string and TillaegstekstSamling is not mapping %} {# Der er flere påtaleberettiget #}
+        <!-- Flere TillaegstekstSamling-->
+        {% for til in TillaegstekstSamling %}
+        <tr><td>&nbsp;</td><td>{% if til['TekstGruppe']['Overskrift']%}{{til['TekstGruppe']['Overskrift']}}<br>{% endif %}{{til['TekstGruppe']['Afsnit']|join('')}}</td>
+        <tr class="spacer"><td>&nbsp;</td></tr>
+        {%- endfor %}
+        {%- else%}
+        <!-- enkelt TillaegstekstSamling-->
+        {% set til = TillaegstekstSamling %}
+        <tr><td>&nbsp;</td><td>{% if til['TekstGruppe']['Overskrift']%}{{til['TekstGruppe']['Overskrift']}}<br>{% endif %}{{til['TekstGruppe']['Afsnit']|join('')}}</td>
+        {%- endif %}
+        <tr class="spacer"><td>&nbsp;</td></tr>
+      {%- endif %}
+
       </table>
       <hr class="item-sep">
 
@@ -381,6 +399,7 @@
             {%- if adkomst['AdkomsthaverSamling']['Adkomsthaver']['AndelIdeel']['Taeller'] is defined and adkomst['AdkomsthaverSamling']['Adkomsthaver']['AndelIdeel']['Naevner'] is defined %}
             <tr><td>Ejerandel:</td><td>{{adkomst['AdkomsthaverSamling']['Adkomsthaver']['AndelIdeel']['Taeller']}}/{{adkomst['AdkomsthaverSamling']['Adkomsthaver']['AndelIdeel']['Naevner']}}</td></tr>
             {%- endif %}
+            <tr class="spacer"><td>&nbsp;</td></tr>
           {%- endif %}
         {%- endif %}
         {%- if adkomst['SkoedeKoebesum'] is defined %}
@@ -393,6 +412,24 @@
           <tr><td>&nbsp;</td><td>{{adkomst['SkoedeOvertagelsesDato']|dateonly}}</td></tr>
           {% endif %}
         {% endif %}
+
+        {%- if adkomst['TillaegstekstSamling'] %}
+          <tr><td class="header">Tillægstekst:</td><td>&nbsp;</td></tr>
+          {% set TillaegstekstSamling = adkomst['TillaegstekstSamling']['TekstAngivelse'] %}
+          {%- if TillaegstekstSamling is sequence and TillaegstekstSamling is not string and TillaegstekstSamling is not mapping %} {# Der er flere påtaleberettiget #}
+          <!-- Flere TillaegstekstSamling-->
+          {% for til in TillaegstekstSamling %}
+          <tr><td>&nbsp;</td><td>{% if til['TekstGruppe']['Overskrift']%}{{til['TekstGruppe']['Overskrift']}}<br>{% endif %}{{til['TekstGruppe']['Afsnit']|join('')}}</td>
+          <tr class="spacer"><td>&nbsp;</td></tr>
+          {%- endfor %}
+          {%- else%}
+          <!-- enkelt TillaegstekstSamling-->
+          {% set til = TillaegstekstSamling %}
+          <tr><td>&nbsp;</td><td>{% if til['TekstGruppe']['Overskrift']%}{{til['TekstGruppe']['Overskrift']}}<br>{% endif %}{{til['TekstGruppe']['Afsnit']|join('')}}</td>
+          {%- endif %}
+          <tr class="spacer"><td>&nbsp;</td></tr>
+        {%- endif %}
+
       </table>
       {%- endif %}
     {%- endif %}
