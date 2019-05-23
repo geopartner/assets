@@ -544,7 +544,7 @@
           {% set ns = namespace(erAfgiftPantebrev=false) %}
           {% if haeft['TillaegstekstSamling'] %}
             {% set TillaegstekstSamling = haeft['TillaegstekstSamling']['TekstAngivelse'] %}
-            {{TillaegstekstSamling}}
+            
             {% if TillaegstekstSamling is sequence and TillaegstekstSamling is not string and TillaegstekstSamling is not mapping %}
             <!-- flere tillægstekster -->
                 {% for til in TillaegstekstSamling if til['TekstGruppe']['Overskrift'].startswith('Afgiftpantebrev') %}
