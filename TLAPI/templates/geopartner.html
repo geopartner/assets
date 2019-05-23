@@ -337,10 +337,6 @@
           {%- if adkomst['SkoedeKoebesum']['AfloesningsbareServitutter'] is defined %}
             <tr><td>Købesummen omfatter servitutter, tinglyst på det købte, der kan forlanges afløst af en pengeydelse:</td><td>{{adkomst['SkoedeKoebesum']['AfloesningsbareServitutter']|thousandSeperator}} {{adkomst['ValutaKode']}}</td></tr>
           {% endif %}
-
-          {%- if adkomst['SkoedeKoebesum']['AfloesningsbareServitutter'] is defined %}
-            <tr><td>Købesummen omfatter servitutter, tinglyst på det købte, der kan forlanges afløst af en pengeydelse:</td><td>{{adkomst['SkoedeKoebesum']['AfloesningsbareServitutter']|thousandSeperator}} {{adkomst['ValutaKode']}}</td></tr>
-          {% endif %}
           
           {%- if adkomst['SkoedeKoebesum']['AnlaegsBidrag'] is defined %}
             <tr><td>Købesummen omfatter beløb til anlægsbidrag til vej mv., der er forfaldent til betaling på tidspunktet for ejerskiftet:</td><td>{{adkomst['SkoedeKoebesum']['AnlaegsBidrag']|thousandSeperator}} {{adkomst['ValutaKode']}}</td></tr>
@@ -469,10 +465,6 @@
 
           {%- if adkomst['SkoedeKoebesum']['OvertagneRestancer'] is defined %}
             <tr><td>Købesummen omfatter overtagne restancer af skatter og afgifter eller af andre ydelser:</td><td>{{adkomst['SkoedeKoebesum']['OvertagneRestancer']|thousandSeperator}} {{adkomst['ValutaKode']}}</td></tr>
-          {% endif %}
-
-          {%- if adkomst['SkoedeKoebesum']['AfloesningsbareServitutter'] is defined %}
-            <tr><td>Købesummen omfatter servitutter, tinglyst på det købte, der kan forlanges afløst af en pengeydelse:</td><td>{{adkomst['SkoedeKoebesum']['AfloesningsbareServitutter']|thousandSeperator}} {{adkomst['ValutaKode']}}</td></tr>
           {% endif %}
 
           {%- if adkomst['SkoedeKoebesum']['AfloesningsbareServitutter'] is defined %}
