@@ -116,7 +116,10 @@
     <tr class="spacer"><td>&nbsp;</td></tr>
     <tr><td class="header">Ejendom:</td><td>&nbsp;</td></tr>
     {% if AdresseStruktur is defined %}
-      <tr><td>Adresse:</td><td>{{AdresseStruktur['StreetName']}} {{AdresseStruktur['AddressSpecific']['AddressAccess']['StreetBuildingIdentifier']}}<br>{{AdresseStruktur['PostCodeIdentifier']}} {{AdresseStruktur['DistrictName']}}</td></tr>
+      <tr><td>Adresse:</td><td>{{AdresseStruktur['StreetName']}} {{AdresseStruktur['AddressSpecific']['AddressAccess']['StreetBuildingIdentifier']}}
+          {%- if AdresseStruktur['AddressSpecific']['FloorIdentifier'] is defined %}, {{AdresseStruktur['AddressSpecific']['FloorIdentifier']}}{% endif %}
+          {%- if AdresseStruktur['AddressSpecific']['SuiteIdentifier'] is defined %} {{AdresseStruktur['AddressSpecific']['SuiteIdentifier']}}{% endif %}
+        <br>{{AdresseStruktur['PostCodeIdentifier']}} {{AdresseStruktur['DistrictName']}}</td></tr>
     {% endif %}
     <tr class="spacer"><td>&nbsp;</td></tr>
 
