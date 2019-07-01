@@ -550,8 +550,12 @@
             
             {% if TillaegstekstSamling is sequence and TillaegstekstSamling is not string and TillaegstekstSamling is not mapping %}
             <!-- flere tillægstekster -->
-                {% for til in TillaegstekstSamling if til['TekstGruppe']['Overskrift'].startswith('Afgiftpantebrev') %}
-                  {% set ns.erAfgiftPantebrev = true %}
+                {% for til in TillaegstekstSamling %}
+                  {%- if til['TekstGruppe']['Overskrift'] is defined %}
+                    {% if til['TekstGruppe']['Overskrift'].startswith('Afgiftpantebrev') %}
+                      {% set ns.erAfgiftPantebrev = true %}
+                    {% endif %}
+                  {% endif %}
                 {% endfor %}
             {% else %}
             <!-- enkelt tillægstekst -->
