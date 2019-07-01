@@ -619,7 +619,7 @@
           {% if haeft['OgsaaLystPaaSamling'] %}
             <tr class="spacer"><td>&nbsp;</td></tr>
             <tr><td class="header">Også tinglyst på:</td><td>&nbsp;</td></tr>
-            <tr><td>Antal:</td><td>{{haeft['OgsaaLystPaaSamling']['EjendomIdentifikatorSamling']['EjendomIdentifikator']|length}}</td></tr>
+            <tr><td>Antal:</td><td>{{haeft['OgsaaLystPaaSamling']['OgsaaLystPaaAntal']}}</td></tr>
           {% endif %}
 
           {# Kreditorer #}
@@ -872,7 +872,7 @@
           {% if haeft['OgsaaLystPaaSamling'] %}
             <tr class="spacer"><td>&nbsp;</td></tr>
             <tr><td class="header">Også tinglyst på:</td><td>&nbsp;</td></tr>
-            <tr><td>Antal:</td><td>{{haeft['OgsaaLystPaaSamling']['EjendomIdentifikatorSamling']['EjendomIdentifikator']|length}}</td></tr>
+            <tr><td>Antal:</td><td>{{haeft['OgsaaLystPaaSamling']['OgsaaLystPaaAntal']}}</td></tr>
           {% endif %}
 
           {# Kreditorer #}
