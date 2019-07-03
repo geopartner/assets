@@ -1213,18 +1213,20 @@
     <hr>
     <h2>Øvrige Oplysninger</h2>
     <table>
+    {%- if EjendomVurderingStruktur is defined %}
       {%- if EjendomVurderingStruktur['EjendomVaerdi'] is defined %}
-      <tr><td class="header">Ejendomsvurdering:</td><td>&nbsp;</td></tr>
-      <tr><td>Ejendomsværdi:</td><td>{{EjendomVurderingStruktur['EjendomVaerdi']|thousandSeperator}} DKK</td></tr>
-      <tr><td>Grundværdi:</td><td>{{EjendomVurderingStruktur['ParcelLandValueAssessmentCalculationAmount']|thousandSeperator}} DKK</td></tr>
-      <tr><td>Vurderingsdato:</td><td>{{EjendomVurderingStruktur['AssessmentChangedDate']|dateonly}}</td></tr>
+        <tr><td class="header">Ejendomsvurdering:</td><td>&nbsp;</td></tr>
+        <tr><td>Ejendomsværdi:</td><td>{{EjendomVurderingStruktur['EjendomVaerdi']|thousandSeperator}} DKK</td></tr>
+        <tr><td>Grundværdi:</td><td>{{EjendomVurderingStruktur['ParcelLandValueAssessmentCalculationAmount']|thousandSeperator}} DKK</td></tr>
+        <tr><td>Vurderingsdato:</td><td>{{EjendomVurderingStruktur['AssessmentChangedDate']|dateonly}}</td></tr>
+        {%- endif %}
+      <tr><td>Kommunekode:</td><td>{{EjendomVurderingStruktur['RealPropertyStructure']['MunicipalityCode']|removepad}}</td></tr>
+      <tr><td>Ejendomsnummer (BBR-nr):</td><td>{{EjendomVurderingStruktur['RealPropertyStructure']['MunicipalRealPropertyIdentifier']|removepad}}</td></tr>
+      <tr class="spacer"><td>&nbsp;</td></tr>
+      <tr><td class="header">Indskannet akt:</td><td>&nbsp;</td></tr>
+      {%- if EjendomStamoplysninger['EjendomIndskannetAktSamling'] %}
+      <tr><td>Akt nr:</td><td>{{EjendomStamoplysninger['EjendomIndskannetAktSamling']['DokumentFilnavnTekst']}}</td></tr>
       {%- endif %}
-    <tr><td>Kommunekode:</td><td>{{EjendomVurderingStruktur['RealPropertyStructure']['MunicipalityCode']|removepad}}</td></tr>
-    <tr><td>Ejendomsnummer (BBR-nr):</td><td>{{EjendomVurderingStruktur['RealPropertyStructure']['MunicipalRealPropertyIdentifier']|removepad}}</td></tr>
-    <tr class="spacer"><td>&nbsp;</td></tr>
-    <tr><td class="header">Indskannet akt:</td><td>&nbsp;</td></tr>
-    {%- if EjendomStamoplysninger['EjendomIndskannetAktSamling'] %}
-    <tr><td>Akt nr:</td><td>{{EjendomStamoplysninger['EjendomIndskannetAktSamling']['DokumentFilnavnTekst']}}</td></tr>
     {%- endif %}
     </table>
     <!-- /Oevrige Oplysninger -->
